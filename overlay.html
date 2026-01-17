@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Overlay</title>
+</head>
+
+<body>
+  <div id="my-loading-container" style="display: flex; position:relative; height:50vh; width: 50vw; background:#00395d;">
+    <div>
+      Splash Screen
+    </div>
+
+    <div id="ee-overlay" style="position:absolute; inset:0; z-index:2; pointer-events:none;">
+    </div>
+  </div>
+
+  <script src="./script_file.js"></script>
+  <script>
+    const overlay = document.getElementById("ee-overlay");
+    FXONE_FESTIVE_EASTER_EGG.start(overlay, {
+      density: 1.0,
+      opacity: 0.85,
+      lanternCount: 10,
+      sparkle: true,
+    });
+  </script>
+</body>
+
+</html>
