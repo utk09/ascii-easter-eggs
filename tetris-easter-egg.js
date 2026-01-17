@@ -9,6 +9,11 @@
  *  Left Arrow, Right Arrow to Move move, Up Arrow to Rotate, Z rotate CCW,
  *  Down Arrow soft drop, Space hard drop
  *  C hold, P pause, R restart, Esc close
+ * In React, use as:
+ useEffect(() => {
+   window.ONE_TETRIS_EGG?.install();
+   return () => window.TETRIS_EGG?.uninstall();
+  }, []);
 */
 (() => {
   const API = {};
