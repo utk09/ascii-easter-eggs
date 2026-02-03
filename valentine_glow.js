@@ -1,6 +1,6 @@
 /* valentine_glow.js
    CSS Valentine's Day overlay, pure JS drop-in for HTML or React.
-   Creates a transparent overlay of floating hearts and falling rose petals.
+   Creates a transparent overlay of floating hearts, falling rose petals, and complete roses.
 
    Global API:
      window.ONE_FESTIVE_EASTER_EGG
@@ -12,6 +12,7 @@
    Options:
      heartCount: number (default 12)
      petalCount: number (default 18)
+     roseCount: number (default 6)
      opacity: number/string (default 0.9)
      zIndex: number (default 2)
      density: 0.3..2.0 (default 1.0)
@@ -19,6 +20,7 @@
      petalColors: array of CSS colors (default rose reds)
      minHeartSize, maxHeartSize: px (default 16..40)
      minPetalSize, maxPetalSize: px (default 10..22)
+     minRoseSize, maxRoseSize: px (default 24..44)
      minDuration, maxDuration: seconds (default 8..14)
      blur: px glow blur (default 12)
      sparkle: true/false (default true)
@@ -187,6 +189,46 @@
           transform: translate3d(var(--sx), var(--sy), 0) scale(0.9);
         }
       }
+
+      /* Rose Emoji */
+      .fxone-rose {
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-size: var(--size);
+        line-height: 1;
+        opacity: var(--o);
+        animation: fxone-rose-float var(--dur) ease-in-out infinite;
+        filter: drop-shadow(0 0 var(--glow) rgba(255, 80, 120, 0.7))
+                drop-shadow(0 0 calc(var(--glow) * 0.5) rgba(255, 50, 100, 0.5));
+        text-shadow: 0 0 var(--glow) rgba(255, 100, 150, 0.6);
+      }
+
+      @keyframes fxone-rose-float {
+        0% {
+          transform: translate3d(var(--x), calc(100% + 60px), 0) rotate(var(--r)) scale(0.8);
+          opacity: 0;
+        }
+        8% {
+          opacity: var(--o);
+        }
+        25% {
+          transform: translate3d(calc(var(--x) + var(--sx) * 0.5), 70%, 0) rotate(calc(var(--r) * -0.5)) scale(0.95);
+        }
+        50% {
+          transform: translate3d(calc(var(--x) + var(--sx)), 45%, 0) rotate(var(--r)) scale(1);
+        }
+        75% {
+          transform: translate3d(calc(var(--x) + var(--sx) * 0.3), 20%, 0) rotate(calc(var(--r) * -0.7)) scale(0.95);
+        }
+        92% {
+          opacity: var(--o);
+        }
+        100% {
+          transform: translate3d(var(--x), -80px, 0) rotate(var(--r)) scale(0.85);
+          opacity: 0;
+        }
+      }
     `;
     document.head.appendChild(styleEl);
   }
@@ -251,11 +293,18 @@
       options.petalCount ??
       Math.max(12, Math.min(30, Math.floor(18 * density)));
 
+    const roseCount =
+      options.roseCount ??
+      Math.max(4, Math.min(10, Math.floor(6 * density)));
+
     const minHeartSize = options.minHeartSize ?? 16;
     const maxHeartSize = options.maxHeartSize ?? 40;
 
     const minPetalSize = options.minPetalSize ?? 10;
     const maxPetalSize = options.maxPetalSize ?? 22;
+
+    const minRoseSize = options.minRoseSize ?? 24;
+    const maxRoseSize = options.maxRoseSize ?? 44;
 
     const minDuration = options.minDuration ?? 8;
     const maxDuration = options.maxDuration ?? 14;
@@ -327,6 +376,34 @@
       el.style.setProperty("--pr", `${petalRot}deg`);
       el.style.setProperty("--c", color);
       el.style.setProperty("--o", String(rand(0.55, 0.85)));
+
+      // Desync animations
+      el.style.animationDelay = `${rand(-dur, 0)}s`;
+
+      root.appendChild(el);
+    }
+
+    // Create roses (emoji)
+    for (let i = 0; i < roseCount; i++) {
+      const el = document.createElement("div");
+      el.className = "fxone-rose";
+      el.textContent = "🌹";
+
+      const size = rand(minRoseSize, maxRoseSize);
+      const xPct = rand(8, 92);
+      const dur = rand(minDuration * 1.1, maxDuration * 1.3);
+      const sway = rand(-40, 40);
+      const rot = rand(-15, 15);
+      const glowSize = rand(8, 16);
+
+      el.style.setProperty("--size", cssPx(size));
+      el.style.setProperty("--glow", cssPx(glowSize));
+      el.style.left = `${xPct}%`;
+      el.style.setProperty("--x", "0px");
+      el.style.setProperty("--dur", `${dur}s`);
+      el.style.setProperty("--sx", `${sway}px`);
+      el.style.setProperty("--r", `${rot}deg`);
+      el.style.setProperty("--o", String(rand(0.75, 1)));
 
       // Desync animations
       el.style.animationDelay = `${rand(-dur, 0)}s`;
