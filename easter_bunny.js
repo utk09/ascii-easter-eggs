@@ -1,5 +1,4 @@
 // Easter Bunny Splash Overlay
-// Paste in console or include as script
 
 (function() {
   const styles = document.createElement('style');
